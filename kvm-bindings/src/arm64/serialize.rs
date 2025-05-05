@@ -36,7 +36,7 @@ mod tests {
         //
         // #[cfg_attr(
         //     feature = "serde",
-        //     derive(zerocopy::AsBytes, zerocopy::FromBytes, zerocopy::FromZeroes)
+        //     derive(zerocopy::IntoBytes, zerocopy::Immutable, zerocopy::FromBytes)
         // )]
         //
         // to all structures causing compilation errors (we need the zerocopy traits, as the

@@ -9,7 +9,7 @@ use bindings::{
 };
 use fam_wrappers::kvm_xsave2;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use zerocopy::{transmute, AsBytes, FromBytes, FromZeroes};
+use zerocopy::{transmute, FromBytes, Immutable, IntoBytes};
 
 serde_impls!(
     kvm_regs,
@@ -38,18 +38,6 @@ serde_impls!(
 // the fields have different sizes, due to the smaller fields having padding.
 // Miri however does not complain about these implementations (e.g. about
 // reading the "padding" for one union field as valid data for a bigger one)
-unsafe impl FromZeroes for kvm_irqchip__bindgen_ty_1 {
-    fn only_derive_is_allowed_to_implement_this_trait()
-    where
-        Self: Sized,
-    {
-    }
-}
-
-// SAFETY: zerocopy's derives explicitly disallow deriving for unions where
-// the fields have different sizes, due to the smaller fields having padding.
-// Miri however does not complain about these implementations (e.g. about
-// reading the "padding" for one union field as valid data for a bigger one)
 unsafe impl FromBytes for kvm_irqchip__bindgen_ty_1 {
     fn only_derive_is_allowed_to_implement_this_trait()
     where
@@ -62,7 +50,19 @@ unsafe impl FromBytes for kvm_irqchip__bindgen_ty_1 {
 // the fields have different sizes, due to the smaller fields having padding.
 // Miri however does not complain about these implementations (e.g. about
 // reading the "padding" for one union field as valid data for a bigger one)
-unsafe impl AsBytes for kvm_irqchip__bindgen_ty_1 {
+unsafe impl IntoBytes for kvm_irqchip__bindgen_ty_1 {
+    fn only_derive_is_allowed_to_implement_this_trait()
+    where
+        Self: Sized,
+    {
+    }
+}
+
+// SAFETY: zerocopy's derives explicitly disallow deriving for unions where
+// the fields have different sizes, due to the smaller fields having padding.
+// Miri however does not complain about these implementations (e.g. about
+// reading the "padding" for one union field as valid data for a bigger one)
+unsafe impl Immutable for kvm_irqchip__bindgen_ty_1 {
     fn only_derive_is_allowed_to_implement_this_trait()
     where
         Self: Sized,
@@ -93,7 +93,7 @@ mod tests {
         //
         // #[cfg_attr(
         //     feature = "serde",
-        //     derive(zerocopy::AsBytes, zerocopy::FromBytes, zerocopy::FromZeroes)
+        //     derive(zerocopy::IntoBytes, zerocopy::Immutable, zerocopy::FromBytes)
         // )]
         //
         // to all structures causing compilation errors (we need the zerocopy traits, as the
